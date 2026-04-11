@@ -1,6 +1,8 @@
 package com.codewithfj.store.Controller;
 
+import com.codewithfj.store.Dto.ApiResponse;
 import com.codewithfj.store.Dto.RegisterRequest;
+import com.codewithfj.store.Dto.UserResponse;
 import com.codewithfj.store.Service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +18,7 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public String register(@RequestBody @Valid RegisterRequest registerRequest) {
+    public ApiResponse<UserResponse> register(@RequestBody @Valid RegisterRequest registerRequest) {
         return userService.register(registerRequest);
     }
 }
