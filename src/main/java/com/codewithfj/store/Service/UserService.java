@@ -1,12 +1,11 @@
 package com.codewithfj.store.Service;
 
 
-import com.codewithfj.store.Dto.ApiResponse;
-import com.codewithfj.store.Dto.RegisterRequest;
-import com.codewithfj.store.Dto.UserResponse;
+import com.codewithfj.store.Dto.*;
 import com.codewithfj.store.Entity.Role;
 import com.codewithfj.store.Entity.User;
 import com.codewithfj.store.Repository.UserRepository;
+import com.codewithfj.store.Security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
     public ApiResponse<UserResponse> register(RegisterRequest request) {
 //        Find if email exists
         userRepository.findByEmail(request.getEmail()).ifPresent(user -> {
@@ -43,4 +43,30 @@ public class UserService {
                 .data(userResponse)
                 .build();
     }
+
+    public ApiResponse<LoginResponse> login (LoginRequest request){
+        var userOptional = userRepository.findByEmail(request.getEmail());
+
+        System.out.println(userOptional.isPresent());
+        if (userOptional.isEmpty()) {
+            throw new RuntimeException("Invalid credentials");
+        }
+
+        var user = userOptional.get();
+        String accessToken = jwtService.generateToken(user.getEmail());
+
+        LoginResponse loginResponse = LoginResponse.builder()
+                .name(user.getName())
+                .email(user.getEmail())
+                .accessToken(accessToken)
+                .build();
+
+        return ApiResponse.<LoginResponse>builder()
+                .success(true)
+                .message("User registered successfully")
+                .data(loginResponse)
+                .build();
+
+    }
+
 }
