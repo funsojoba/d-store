@@ -4,6 +4,7 @@ package com.codewithfj.store.Service;
 import com.codewithfj.store.Dto.*;
 import com.codewithfj.store.Entity.Role;
 import com.codewithfj.store.Entity.User;
+import com.codewithfj.store.Exception.UnauthorizedException;
 import com.codewithfj.store.Repository.UserRepository;
 import com.codewithfj.store.Security.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -47,9 +48,8 @@ public class UserService {
     public ApiResponse<LoginResponse> login (LoginRequest request){
         var userOptional = userRepository.findByEmail(request.getEmail());
 
-        System.out.println(userOptional.isPresent());
         if (userOptional.isEmpty()) {
-            throw new RuntimeException("Invalid credentials");
+            throw new UnauthorizedException("Invalid credentials");
         }
 
         var user = userOptional.get();
@@ -63,7 +63,7 @@ public class UserService {
 
         return ApiResponse.<LoginResponse>builder()
                 .success(true)
-                .message("User registered successfully")
+                .message("User login successfully")
                 .data(loginResponse)
                 .build();
 
