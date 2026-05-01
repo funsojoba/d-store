@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.stream.Collectors;
 
@@ -78,12 +80,23 @@ public class GlobalExceptionHandler {
     }
 
 
+    @ExceptionHandler(NoResourceFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiResponse<?> handleNotFound(NoResourceFoundException ex) {
+        return ApiResponse.builder()
+                .success(false)
+                .message("Endpoint not found")
+                .data(null)
+                .build();
+    }
+
+
     // 🔴 Catch-all (VERY IMPORTANT)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGeneral(Exception ex) {
 
         // ⚠️ In production, log this properly
-//        ex.printStackTrace();
+        ex.printStackTrace();
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                 ApiResponse.<Void>builder()

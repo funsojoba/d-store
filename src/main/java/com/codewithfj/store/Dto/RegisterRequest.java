@@ -1,5 +1,6 @@
 package com.codewithfj.store.Dto;
 
+import com.codewithfj.store.Entity.Role;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -14,4 +15,6 @@ public class RegisterRequest {
 
     @NotBlank(message = "Password is required")
     private String password;
+
+    private Role role = Role.USER;
 }

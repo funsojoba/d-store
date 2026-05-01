@@ -23,12 +23,14 @@ public class UserService {
             throw new RuntimeException("Invalid credentials");
         });
 
+        Role role = (request.getRole() == Role.ADMIN) ? Role.ADMIN : Role.USER;
+
         // Create user
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
+                .role(role)
                 .build();
 
         userRepository.save(user);
