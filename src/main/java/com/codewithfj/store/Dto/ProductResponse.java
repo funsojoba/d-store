@@ -17,7 +17,7 @@ public class ProductResponse {
     private String name;
     private String description;
     private Long price;
-    private String category;
+    private CategoryResponse category;
     private Boolean isActive;
     private String imageUrl;
     private LocalDateTime createdAt;

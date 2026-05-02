@@ -21,7 +21,9 @@ public class Product {
     private String name;
     private String description;
     private Long price;
-    private String category;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
     private Boolean isActive;
     private String imageUrl;
     private LocalDateTime createdAt;
