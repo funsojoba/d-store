@@ -5,10 +5,12 @@ import com.codewithfj.store.Dto.ApiResponse;
 import com.codewithfj.store.Dto.CategoryResponse;
 import com.codewithfj.store.Dto.ProductResponse;
 import com.codewithfj.store.Entity.Product;
+import com.codewithfj.store.Exception.ResourceNotFoundException;
 import com.codewithfj.store.Repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +18,30 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
+
+    public ApiResponse<ProductResponse> findById(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+
+            ProductResponse productResponse = ProductResponse.builder()
+                    .id(product.getId())
+                    .name(product.getName())
+                    .description(product.getDescription())
+                    .price(product.getPrice())
+                    .category(CategoryResponse.builder()
+                            .id(product.getCategory().getId())
+                            .name(product.getCategory().getName())
+                            .build())
+                    .createdAt(product.getCreatedAt())
+                    .build();
+
+            return ApiResponse.<ProductResponse>builder()
+                    .success(true)
+                    .data(productResponse)
+                    .message("Product fetched successfully")
+                    .build();
+
+    };
 
     public ApiResponse<List<ProductResponse>> listAll(
             Long categoryId
