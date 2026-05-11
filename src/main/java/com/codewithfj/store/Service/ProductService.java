@@ -32,6 +32,8 @@ public class ProductService {
                     .name(product.getName())
                     .description(product.getDescription())
                     .price(product.getPrice())
+                    .imageUrl(product.getImageUrl())
+                    .isActive(product.getIsActive())
                     .category(CategoryResponse.builder()
                             .id(product.getCategory().getId())
                             .name(product.getCategory().getName())
@@ -64,10 +66,13 @@ public class ProductService {
                 .description(productRequest.getDescription())
                 .price(productRequest.getPrice())
                 .rating(0L)
+                .imageUrl(productRequest.getImageUrl())
+                .isActive(productRequest.getIsActive())
                 .category(category)
                 .build();
         productRepository.save(product);
 
+        assert category != null;
         ProductResponse productResponse = ProductResponse.builder()
                 .id(product.getId())
                 .name(productRequest.getName())
@@ -107,6 +112,8 @@ public class ProductService {
                         .name(product.getName())
                         .description(product.getDescription())
                         .price(product.getPrice())
+                        .imageUrl(product.getImageUrl())
+                        .isActive(product.getIsActive())
                         .category(CategoryResponse.builder()
                                 .id(product.getCategory().getId())
                                 .name(product.getCategory().getName())

@@ -18,6 +18,7 @@ public class ProductResponse {
     private String description;
     private Long price;
     private CategoryResponse category;
+    private Long rating;
     private Boolean isActive;
     private String imageUrl;
     private LocalDateTime createdAt;
