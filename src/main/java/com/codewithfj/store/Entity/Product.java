@@ -3,6 +3,8 @@ package com.codewithfj.store.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -26,7 +28,12 @@ public class Product {
     private Category category;
     private Boolean isActive;
     private String imageUrl;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    private Long rating;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }

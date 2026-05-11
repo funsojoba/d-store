@@ -23,10 +23,9 @@ public class ProductRequest {
     @NotBlank(message = "description is required")
     private String description;
 
-    @NotBlank(message = "price is required")
+    @NotNull(message = "price is required")
     private Long price;
-    private String category;
+    private Long category;
     private Boolean isActive;
     private String imageUrl;
-
 }

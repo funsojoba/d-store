@@ -2,8 +2,10 @@ package com.codewithfj.store.Controller;
 
 
 import com.codewithfj.store.Dto.ApiResponse;
+import com.codewithfj.store.Dto.ProductRequest;
 import com.codewithfj.store.Dto.ProductResponse;
 import com.codewithfj.store.Service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,11 @@ public class ProductController {
             @RequestParam(required = false) Long categoryId
     ) {
         return productService.listAll(categoryId);
+    }
+
+    @PostMapping("")
+    public ApiResponse<ProductResponse> product(@RequestBody @Valid ProductRequest productRequest) {
+        return productService.createProduct(productRequest);
     }
 
     @GetMapping("/{id}")

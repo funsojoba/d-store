@@ -3,9 +3,12 @@ package com.codewithfj.store.Service;
 
 import com.codewithfj.store.Dto.ApiResponse;
 import com.codewithfj.store.Dto.CategoryResponse;
+import com.codewithfj.store.Dto.ProductRequest;
 import com.codewithfj.store.Dto.ProductResponse;
+import com.codewithfj.store.Entity.Category;
 import com.codewithfj.store.Entity.Product;
 import com.codewithfj.store.Exception.ResourceNotFoundException;
+import com.codewithfj.store.Repository.CategoryRepository;
 import com.codewithfj.store.Repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
     public ApiResponse<ProductResponse> findById(Long id) {
         Product product = productRepository.findById(id)
@@ -42,6 +46,50 @@ public class ProductService {
                     .build();
 
     };
+
+    public ApiResponse<ProductResponse> createProduct(ProductRequest productRequest) {
+        if (productRepository.findByName(productRequest.getName()).isPresent()) {
+            throw new ResourceNotFoundException("Product already exists");
+        }
+        Category category = null;
+
+        if(productRequest.getCategory() != null){
+            category = categoryRepository.findById(productRequest.getCategory()).orElseThrow(
+                    () -> new ResourceNotFoundException("Category not found")
+            );
+        }
+
+        Product product = Product.builder()
+                .name(productRequest.getName())
+                .description(productRequest.getDescription())
+                .price(productRequest.getPrice())
+                .rating(0L)
+                .category(category)
+                .build();
+        productRepository.save(product);
+
+        ProductResponse productResponse = ProductResponse.builder()
+                .id(product.getId())
+                .name(productRequest.getName())
+                .description(productRequest.getDescription())
+                .price(productRequest.getPrice())
+                .category(CategoryResponse.builder()
+                                        .id(category.getId())
+                                        .name(category.getName())
+                                        .build())
+                .isActive(product.getIsActive())
+                .imageUrl(productRequest.getImageUrl())
+                .createdAt(product.getCreatedAt())
+                .updatedAt(product.getUpdatedAt())
+                .build();
+
+        return ApiResponse.<ProductResponse>builder()
+                .success(true)
+                .data(productResponse)
+                .message("Product created successfully")
+                .build();
+
+    }
 
     public ApiResponse<List<ProductResponse>> listAll(
             Long categoryId
